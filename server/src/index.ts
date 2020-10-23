@@ -11,13 +11,14 @@ import { __prod__ } from "./constants";
 import Redis from "ioredis";
 import cors from "cors";
 import connectRedis from "connect-redis";
+
 const main = async () => {
   const orm = await createConnection(typeConfig);
 
   const app = express();
 
   const RedisStore = connectRedis(session);
-  const redis = new Redis();
+  const redis = new Redis("127.0.0.1:6379"); //change this
 
   app.use(
     cors({

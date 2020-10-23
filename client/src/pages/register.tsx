@@ -11,6 +11,7 @@ import {
   useRegisterMutation,
 } from "../generated/graphql";
 import { toErrorObj } from "../utils/toErrorObj";
+import { checkPasswordFields } from "../utils/checkPasswordFields";
 
 interface registerProps {}
 
@@ -33,10 +34,9 @@ const Register: React.FC<registerProps> = ({}) => {
         onSubmit={async (values, { setErrors }) => {
           //check if it equal the two password field
           if (values.password !== values.passwordCopy) {
-            setErrors({
-              passwordCopy: "password not equal",
-              password: "password not equal",
-            });
+            setErrors(
+              checkPasswordFields(values.password, values.passwordCopy)
+            );
 
             return;
           }

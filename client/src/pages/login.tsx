@@ -1,4 +1,4 @@
-import { Box, Flex, Button, Image } from "@chakra-ui/core";
+import { Box, Flex, Button, Image, Link as StyleLink } from "@chakra-ui/core";
 import { Formik, Form } from "formik";
 import React from "react";
 import { useRouter } from "next/router";
@@ -10,6 +10,7 @@ import {
   useLoginMutation,
 } from "../generated/graphql";
 import { toErrorObj } from "../utils/toErrorObj";
+import Link from "next/link";
 
 interface loginProps {}
 
@@ -62,9 +63,18 @@ const Login: React.FC<loginProps> = ({}) => {
               placeholder="password"
               type="password"
             />
+            <Flex justify="space-between">
+              <Link href="/forgot-password">
+                <StyleLink color="gray.600">Forgot password?</StyleLink>
+              </Link>
+
+              <Link href="/register">
+                <StyleLink color="gray.600">Register now</StyleLink>
+              </Link>
+            </Flex>
             <Flex alignItems="center">
               <Button
-                mt={2}
+                mt={3}
                 mx="auto"
                 variantColor="blue"
                 isLoading={isSubmitting}
