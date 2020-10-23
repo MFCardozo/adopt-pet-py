@@ -1,1 +1,0 @@
-//# sourceMappingURL=AnimalProps.js.map
