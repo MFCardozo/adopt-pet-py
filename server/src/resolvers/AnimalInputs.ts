@@ -1,4 +1,4 @@
-import { Field, InputType, Int } from "type-graphql";
+import { Field, InputType } from "type-graphql";
 
 @InputType()
 export class AnimalInputs {
@@ -20,8 +20,8 @@ export class AnimalInputs {
   @Field()
   gender: string;
 
-  @Field(() => Int, { nullable: true })
-  age?: number;
+  @Field({ nullable: true })
+  age?: string;
 
   @Field()
   phone: string;

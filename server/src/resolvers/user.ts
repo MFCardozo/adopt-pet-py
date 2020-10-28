@@ -15,16 +15,8 @@ import { User } from "../entities/User";
 import { MyContext } from "../typesContext";
 import { sendEmail } from "../utils/sendEmail";
 import { validateRegister } from "../utils/validateRegister";
+import { FieldError } from "./FieldError";
 import { UserInputs } from "./UserInputs";
-
-@ObjectType()
-class FieldError {
-  @Field()
-  field: string;
-
-  @Field()
-  message: string;
-}
 
 @ObjectType()
 class UserResponse {

@@ -82,7 +82,7 @@ const ChangePassword: React.FC<changePasswordProps> = ({}) => {
                   {tokenError}
                 </Text>
                 <Link href="/forgot-password">
-                  <StyleLink color="gray.600">get a new one</StyleLink>
+                  <StyleLink color="grayText">get a new one</StyleLink>
                 </Link>
               </Flex>
             ) : null}

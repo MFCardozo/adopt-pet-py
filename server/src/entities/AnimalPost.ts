@@ -4,9 +4,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { User } from "./User";
 
 @ObjectType()
 @Entity()
@@ -41,7 +43,7 @@ export class Animal extends BaseEntity {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  age?: number;
+  age?: string;
 
   @Field()
   @Column("text")
@@ -58,6 +60,13 @@ export class Animal extends BaseEntity {
   @Field()
   @Column("text")
   location!: string;
+
+  @Field()
+  @Column()
+  creatorId: number;
+
+  @ManyToOne(() => User, (user) => user.posts)
+  creator: User;
 
   @Field()
   @CreateDateColumn()

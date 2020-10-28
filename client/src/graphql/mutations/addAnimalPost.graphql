@@ -1,0 +1,42 @@
+mutation AddAnimalPost(
+  $size: String!
+  $name: String!
+  $images: [String!]!
+  $description: String
+  $age: String
+  $type: String!
+  $gender: String!
+  $phone: String!
+  $location: String!
+  $vaccionations: Boolean!
+  $neutered: Boolean!
+) {
+  addAnimal(
+    props: {
+      size: $size
+      name: $name
+      images: $images
+      description: $description
+      age: $age
+      type: $type
+      gender: $gender
+      phone: $phone
+      location: $location
+      vaccionations: $vaccionations
+      neutered: $neutered
+    }
+  ) {
+    animal {
+      id
+      name
+      creatorId
+      description
+      type
+      createdDate
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

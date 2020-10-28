@@ -103,7 +103,7 @@ const NavBar: React.FC = (props) => {
         width={["full", "auto"]}
         alignItems="center"
         flexGrow={1}
-        order={[4, 2]}
+        order={[5, 2]}
       >
         <Link href="/">
           <MenuItems>Find a dog</MenuItems>
@@ -114,7 +114,7 @@ const NavBar: React.FC = (props) => {
 
         <hr />
       </Box>
-      <Flex minW={["70%", "40%"]} justify="flex-end" order={3} mr={1}>
+      <Flex minW={["40%", "20%"]} justify="flex-end" order={2} mr={1}>
         <IconButton
           aria-label="Search database"
           variant="ghost"
@@ -122,7 +122,7 @@ const NavBar: React.FC = (props) => {
           icon="search"
         />
       </Flex>
-      <Box display={["block", "none"]} onClick={handleToggle} order={[3, 6]}>
+      <Box display={["block", "none"]} onClick={handleToggle} order={[4, 6]}>
         <svg
           fill="white"
           width="24px"
@@ -139,6 +139,11 @@ const NavBar: React.FC = (props) => {
           />
         </svg>
       </Box>
+      <Link href="/create-post">
+        <Button size="sm" variantColor="blue" mr={2} order={3}>
+          Public Post
+        </Button>
+      </Link>
 
       <Box
         display={[show ? "block" : "none", "block"]}

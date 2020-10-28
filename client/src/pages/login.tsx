@@ -65,11 +65,11 @@ const Login: React.FC<loginProps> = ({}) => {
             />
             <Flex justify="space-between">
               <Link href="/forgot-password">
-                <StyleLink color="gray.600">Forgot password?</StyleLink>
+                <StyleLink color="grayText">Forgot password?</StyleLink>
               </Link>
 
               <Link href="/register">
-                <StyleLink color="gray.600">Register now</StyleLink>
+                <StyleLink color="grayText">Register now</StyleLink>
               </Link>
             </Flex>
             <Flex alignItems="center">

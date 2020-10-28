@@ -1,0 +1,15 @@
+query AnimalPosts($limit: Int!, $cursor: String) {
+  animalPosts(limit: $limit, cursor: $cursor) {
+    animalPost {
+      id
+      name
+      images
+      type
+      createdDate
+      location
+      gender
+      size
+    }
+    hasMore
+  }
+}

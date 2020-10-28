@@ -1,4 +1,4 @@
-import { Animal } from "./entities/Animal";
+import { Animal } from "./entities/AnimalPost";
 import { User } from "./entities/User";
 
 export default {

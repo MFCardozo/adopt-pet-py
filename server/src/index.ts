@@ -1,21 +1,22 @@
-import "reflect-metadata";
-import { createConnection } from "typeorm";
-import typeConfig from "./type-orm.config";
-import express from "express";
 import { ApolloServer } from "apollo-server-express";
-import { buildSchema } from "type-graphql";
-import { AnimalResolver } from "./resolvers/animal";
-import { UserResolver } from "./resolvers/user";
-import session from "express-session";
-import { __prod__ } from "./constants";
-import Redis from "ioredis";
-import cors from "cors";
 import connectRedis from "connect-redis";
+import cors from "cors";
+import express from "express";
+import session from "express-session";
+import Redis from "ioredis";
+import "reflect-metadata";
+import { buildSchema } from "type-graphql";
+import { createConnection } from "typeorm";
+import { __prod__ } from "./constants";
+import { AnimalResolver } from "./resolvers/animalPosts";
+import { UserResolver } from "./resolvers/user";
+import typeConfig from "./type-orm.config";
 
 const main = async () => {
   const orm = await createConnection(typeConfig);
 
   const app = express();
+  //rh
 
   const RedisStore = connectRedis(session);
   const redis = new Redis("127.0.0.1:6379"); //change this
