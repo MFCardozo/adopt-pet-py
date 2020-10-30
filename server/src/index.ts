@@ -3,6 +3,7 @@ import connectRedis from "connect-redis";
 import cors from "cors";
 import express from "express";
 import session from "express-session";
+import { graphqlUploadExpress } from "graphql-upload";
 import Redis from "ioredis";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
@@ -54,7 +55,9 @@ const main = async () => {
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res, redis }),
+    uploads: false,
   });
+  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
   apolloServer.applyMiddleware({ app, cors: false });
 

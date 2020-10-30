@@ -1,3 +1,4 @@
+import { GraphQLUpload, FileUpload } from "graphql-upload";
 import { Field, InputType } from "type-graphql";
 
 @InputType()
@@ -8,8 +9,9 @@ export class AnimalInputs {
   @Field({ nullable: true })
   description?: string;
 
-  @Field(() => [String])
-  images: string[];
+  // solve this fuck shit
+  // @Field(() => GraphQLUpload)
+  // images: FileUpload;
 
   @Field()
   size: string;

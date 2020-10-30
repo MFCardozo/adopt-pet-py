@@ -12,7 +12,7 @@ import { getConnection } from "typeorm";
 import { v4 } from "uuid";
 import { FORGET_PASSWORD_PREFIX } from "../constants";
 import { User } from "../entities/User";
-import { MyContext } from "../typesContext";
+import { MyContext } from "../types/typesContext";
 import { sendEmail } from "../utils/sendEmail";
 import { validateRegister } from "../utils/validateRegister";
 import { FieldError } from "./FieldError";

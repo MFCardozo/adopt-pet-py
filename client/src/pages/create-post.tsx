@@ -15,55 +15,79 @@ import {
   PseudoBox,
   IconButton,
   Tag,
+  NumberInputField,
 } from "@chakra-ui/core";
 import { Formik, Form, Field } from "formik";
+import { useRouter } from "next/router";
 import React from "react";
 import { useState } from "react";
+import { register } from "timeago.js";
 import { InputField } from "../components/InputField";
 import { Layout } from "../components/Layout";
 import { Wrapper } from "../components/Wrapper";
+import { useAddAnimalPostMutation } from "../generated/graphql";
+import { toErrorObj } from "../utils/toErrorObj";
 
 interface CreatePostProps {}
 
 const CreatePost: React.FC<CreatePostProps> = ({}) => {
+  const router = useRouter();
+  const [addAnimalPost] = useAddAnimalPostMutation();
   const [imagePreview, setImagePreview] = useState<[]>([]);
 
   //function to previsualized the image seleted
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const imagesUploaded = Array.from(e.target.files!);
-    if (imagesUploaded && imagePreview.length < 2) {
-      imagesUploaded.forEach((image) => {
-        let reader = new FileReader();
-        reader.onloadend = () => {
-          setImagePreview(
-            (imgPreview) => [...imgPreview, reader.result] as any
-          );
-        };
-        reader.readAsDataURL(image);
-      });
-    }
-  };
+  // const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const imagesUploaded = Array.from(e.target.files!);
+
+  //   if (imagesUploaded && imagePreview.length < 2) {
+  //     imagesUploaded.forEach((image) => {
+  //       let reader = new FileReader();
+  //       reader.onloadend = () => {
+  //         setImagePreview(
+  //           (imgPreview) => [...imgPreview, reader.result] as any
+  //         );
+  //       };
+  //       reader.readAsDataURL(image);
+  //     });
+  //   }
+  // };
+
+  // TODOCHANGE THE PERFONRMACE OF FORM
   return (
     <Layout>
       <Formik
         initialValues={{
           name: "",
           description: "",
-          type: "",
+          type: "Cat",
           age: "",
-          images: [],
-          size: "",
-          gender: "",
+          images: null,
+          size: "Newborn",
+          gender: "Female",
           phone: "",
           location: "",
           vaccionations: false,
           neutered: false,
         }}
         onSubmit={async (values, { setErrors }) => {
-          await console.log(values);
+          if (!values.images) {
+            setErrors({ images: "An image must be selected" });
+            return;
+          }
+          const response = await addAnimalPost({
+            variables: values,
+          });
+
+          if (response.data?.addAnimal.errors) {
+            setErrors(toErrorObj(response.data.addAnimal.errors));
+          } else if (response.data?.addAnimal.animal) {
+            //successfully animal added
+            router.push("/");
+          }
+          return response;
         }}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, setFieldValue }) => (
           <Form>
             <InputField
               name="name"
@@ -71,69 +95,55 @@ const CreatePost: React.FC<CreatePostProps> = ({}) => {
               placeholder="pet name"
               isRequired
             />
-
             <InputField
               textarea
               name="description"
               label="Description"
               placeholder="Ej:A good dog..."
             />
-
             <InputField name="age" label="Age" placeholder="Ej:2" />
-
-            <Flex py={4} flexDirection="column" justify="space-between">
-              {/* TODO: fix the radio inputs */}
-              <div id="my-radio-group">Type</div>
-              <div role="group" aria-labelledby="my-radio-group">
-                <label>
-                  <Field type="radio" name="type" value="Cat" checked />
+            <FormControl as="fieldset" mb={4}>
+              <FormLabel as="legend">Type</FormLabel>
+              <RadioGroup
+                defaultValue="Cat"
+                onChange={(e) => setFieldValue("type", e.target.value)}
+              >
+                <Radio value="Cat" name="type">
                   Cat
-                </label>
-                <label>
-                  <Field type="radio" name="type" value="Dog" />
+                </Radio>
+
+                <Radio value="Dog" name="type">
                   Dog
-                </label>
-                <label>
-                  <Field type="radio" name="type" value="Other" />
+                </Radio>
+                <Radio value="Other" name="type">
                   Other
-                </label>
-              </div>
+                </Radio>
+              </RadioGroup>
+            </FormControl>
+            <FormControl as="fieldset" mb={4}>
+              <FormLabel as="legend">Gender</FormLabel>
 
-              {/* <FormLabel id="radio-group-type">Type</FormLabel> */}
-              {/* <Flex
-                justify="space-evenly"
-                role="group"
-                aria-labelledby="radio-group-type"
-              > */}
+              <RadioGroup
+                defaultValue="Female"
+                onChange={(e) => setFieldValue("gender", e.target.value)}
+              >
+                <Radio value="Female">Female</Radio>
+                <Radio value="Male">Male</Radio>
+              </RadioGroup>
+            </FormControl>
+            <FormControl as="fieldset">
+              <FormLabel as="legend">Size</FormLabel>
 
-              {/* <Radio id="type" value="Dog" name="type">
-                    Dog
-                  </Radio>
-                  <Radio id="type" value="Other" name="type">
-                    Other
-                  </Radio> */}
-              {/* </Flex> */}
-
-              <FormControl as="fieldset" mb={4}>
-                <FormLabel as="legend">Gender</FormLabel>
-
-                <RadioGroup defaultValue="Female" name="gender">
-                  <Radio value="Female">Female</Radio>
-                  <Radio value="Male">Male</Radio>
-                </RadioGroup>
-              </FormControl>
-              <FormControl as="fieldset">
-                <FormLabel as="legend">Size</FormLabel>
-
-                <RadioGroup defaultValue="Little">
-                  <Radio value="Newborn">Newborn</Radio>
-                  <Radio value="Little">Little</Radio>
-                  <Radio value="Medium">Medium</Radio>
-                  <Radio value="Big">Big</Radio>
-                </RadioGroup>
-              </FormControl>
-            </Flex>
-
+              <RadioGroup
+                defaultValue="Newborn"
+                onChange={(e) => setFieldValue("size", e.target.value)}
+              >
+                <Radio value="Newborn">Newborn</Radio>
+                <Radio value="Little">Little</Radio>
+                <Radio value="Medium">Medium</Radio>
+                <Radio value="Big">Big</Radio>
+              </RadioGroup>
+            </FormControl>
             <Stack spacing={10} isInline my={4}>
               <Tag variant="outline" color="black">
                 <Field
@@ -150,35 +160,33 @@ const CreatePost: React.FC<CreatePostProps> = ({}) => {
                 Neutered
               </Tag>
             </Stack>
-
-            {/* TODO:fix IMG UPLOADER */}
-
-            <PseudoBox
-              as="button"
-              fontWeight="semibold"
-              py={2}
-              px={4}
-              rounded="md"
-              color="white"
-              bg="blue.500"
-              _active={{ bg: "blue.700" }}
-              _focus={{ boxShadow: "outline" }}
-            >
-              <InputField
+            {/* TODO:Sho preview image */}
+            <FormControl isRequired>
+              <Button
+                as={FormLabel}
+                mt={2}
+                mx="auto"
+                variantColor="blue"
+                htmlFor="images"
+              >
+                Choose Pet Images
+              </Button>
+              <Input
+                id="images"
                 type="file"
                 name="images"
-                label="Choose Pet Images"
                 accept="image/*"
                 opacity={0}
                 w={0}
                 position="absolute"
                 z-index={-1}
-                multiple
+                // multiple
                 onChange={(e) => {
-                  handleFileUpload(e);
+                  setFieldValue("images", e.target.files[0]);
                 }}
               />
-            </PseudoBox>
+            </FormControl>
+
             <Flex minH="220px" borderWidth="1px" rounded="lg" my={1}>
               {imagePreview?.length === 0 ? (
                 <Text>No image selected</Text>
@@ -197,7 +205,6 @@ const CreatePost: React.FC<CreatePostProps> = ({}) => {
                 </Flex>
               )}
             </Flex>
-
             <InputGroup alignItems="center">
               <InputLeftAddon children="+595" mt="20px" />
               <InputField
@@ -214,7 +221,6 @@ const CreatePost: React.FC<CreatePostProps> = ({}) => {
               label="Location"
               placeholder="Asuncion"
             />
-
             <Flex alignItems="center">
               <Button
                 mt={2}

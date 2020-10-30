@@ -11,6 +11,8 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type Query = {
@@ -81,6 +83,7 @@ export type Mutation = {
 
 
 export type MutationAddAnimalArgs = {
+  images: Scalars['Upload'];
   props: AnimalInputs;
 };
 
@@ -129,10 +132,10 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
+
 export type AnimalInputs = {
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  images: Array<Scalars['String']>;
   size: Scalars['String'];
   type: Scalars['String'];
   gender: Scalars['String'];
@@ -158,7 +161,7 @@ export type UserInputs = {
 export type AddAnimalPostMutationVariables = Exact<{
   size: Scalars['String'];
   name: Scalars['String'];
-  images: Array<Scalars['String']>;
+  images: Scalars['Upload'];
   description?: Maybe<Scalars['String']>;
   age?: Maybe<Scalars['String']>;
   type: Scalars['String'];
@@ -294,8 +297,8 @@ export type CurrentUserLoginQuery = (
 
 
 export const AddAnimalPostDocument = gql`
-    mutation AddAnimalPost($size: String!, $name: String!, $images: [String!]!, $description: String, $age: String, $type: String!, $gender: String!, $phone: String!, $location: String!, $vaccionations: Boolean!, $neutered: Boolean!) {
-  addAnimal(props: {size: $size, name: $name, images: $images, description: $description, age: $age, type: $type, gender: $gender, phone: $phone, location: $location, vaccionations: $vaccionations, neutered: $neutered}) {
+    mutation AddAnimalPost($size: String!, $name: String!, $images: Upload!, $description: String, $age: String, $type: String!, $gender: String!, $phone: String!, $location: String!, $vaccionations: Boolean!, $neutered: Boolean!) {
+  addAnimal(props: {size: $size, name: $name, description: $description, age: $age, type: $type, gender: $gender, phone: $phone, location: $location, vaccionations: $vaccionations, neutered: $neutered}, images: $images) {
     animal {
       id
       name

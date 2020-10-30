@@ -24,7 +24,7 @@ export const AnimalCard: React.FC<AnimalCardProps> = ({ data }) => {
 
   return (
     <Box maxW="100%" borderWidth="1px" borderRadius="lg" overflow="hidden">
-      <Image minH="300px" src="http://placekitten.com/300/300" alt={type} />
+      <Image minH="300px" src={`/public-images/${images[0]}`} alt={type} />
 
       <Box p="1">
         <Box d="flex" alignItems="baseline" justifyContent="space-between">
@@ -35,7 +35,7 @@ export const AnimalCard: React.FC<AnimalCardProps> = ({ data }) => {
             <Badge
               borderRadius="full"
               px="2"
-              variantColor={gender === "female" ? "red" : "blue"}
+              variantColor={gender === "Female" ? "red" : "blue"}
             >
               {gender}
             </Badge>

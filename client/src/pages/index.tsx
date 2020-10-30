@@ -4,6 +4,7 @@ import { AnimalCard } from "../components/AnimalCard";
 import { AnimalCardList } from "../components/AnimalCardList";
 import { Layout } from "../components/Layout";
 
+// TODO: FIX the color of genders
 const Index: React.FC = () => {
   return (
     <Layout>
