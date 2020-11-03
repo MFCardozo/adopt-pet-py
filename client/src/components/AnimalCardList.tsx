@@ -1,20 +1,22 @@
-import { Box, SimpleGrid, Skeleton } from "@chakra-ui/core";
+import { Box, SimpleGrid, Skeleton, Flex, Button } from "@chakra-ui/core";
 import React from "react";
 import { useAnimalPostsQuery } from "../generated/graphql";
 import useWindowSize from "../utils/useWindowSize";
 import { AnimalCard } from "./AnimalCard";
 
-interface AnimalCardListProps {}
+interface AnimalCardListProps {
+  filter?: string | null;
+}
 
-export const AnimalCardList: React.FC<AnimalCardListProps> = ({}) => {
-  let limit = 12; //only if case fail the window hook
-  const size = useWindowSize();
-  limit = size.width! >= 600 ? 12 : 5;
 
-  const { data, error, loading, fetchMore } = useAnimalPostsQuery({
+export const AnimalCardList: React.FC<AnimalCardListProps> = ({ filter }) => {
+  const limit = 8;
+
+  const { data, error, loading, fetchMore, variables } = useAnimalPostsQuery({
     variables: {
       limit,
       cursor: null,
+      type: filter,
     },
     notifyOnNetworkStatusChange: true,
   });
@@ -47,6 +49,30 @@ export const AnimalCardList: React.FC<AnimalCardListProps> = ({}) => {
           })}
         </SimpleGrid>
       )}
+
+      {data && data?.animalPosts.hasMore ? (
+        <Flex>
+          <Button
+            onClick={() => {
+              fetchMore({
+                variables: {
+                  limit: variables?.limit,
+                  cursor:
+                    data.animalPosts.animalPost[
+                      data.animalPosts.animalPost.length - 1
+                    ].createdDate,
+                },
+              });
+            }}
+            isLoading={loading}
+            m="auto"
+            variantColor="blue"
+            my={8}
+          >
+            load more
+          </Button>
+        </Flex>
+      ) : null}
     </>
   );
 };

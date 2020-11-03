@@ -2,7 +2,7 @@ import { Box, Flex, Button, Image, Link as StyleLink } from "@chakra-ui/core";
 import { Formik, Form } from "formik";
 import React from "react";
 import { useRouter } from "next/router";
-import { InputField } from "../components/InputField";
+import { InputField } from "../components/formComponents/InputField";
 import { Wrapper } from "../components/Wrapper";
 import {
   CurrentUserLoginDocument,
@@ -11,6 +11,7 @@ import {
 } from "../generated/graphql";
 import { toErrorObj } from "../utils/toErrorObj";
 import Link from "next/link";
+import { withApollo } from "../utils/withApollo";
 
 interface loginProps {}
 
@@ -43,8 +44,13 @@ const Login: React.FC<loginProps> = ({}) => {
           if (response.data?.login.errors) {
             setErrors(toErrorObj(response.data?.login.errors));
           } else if (response.data?.login.user) {
-            //successfully login
-            router.push("/");
+            //from create post
+            if (typeof router.query.next === "string") {
+              router.push(router.query.next);
+            } else {
+              // worked
+              router.push("/");
+            }
           }
         }}
       >
@@ -90,4 +96,4 @@ const Login: React.FC<loginProps> = ({}) => {
   );
 };
 
-export default Login;
+export default withApollo({ ssr: false })(Login);

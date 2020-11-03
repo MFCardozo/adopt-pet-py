@@ -1,0 +1,18 @@
+query animalPost($id: Int!) {
+  animal(id: $id) {
+    name
+    id
+    description
+    images
+    size
+    type
+    gender
+    age
+    phone
+    creatorId
+    location
+    createdDate
+    vaccionations
+    neutered
+  }
+}

@@ -43,7 +43,8 @@ export class AnimalResolver {
   @Query(() => PaginatedAnimalsPosts)
   async animalPosts(
     @Arg("limit", () => Int) limit: number,
-    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
+    @Arg("type", () => String, { nullable: true }) type: string | null
   ): Promise<PaginatedAnimalsPosts> {
     // not more than 50 limit
     const realLimit = Math.min(50, limit);
@@ -52,19 +53,31 @@ export class AnimalResolver {
     const replacements: any[] = [reaLimitPlusOne];
 
     if (cursor) {
-      replacements.push(new Date(parseInt(cursor)));
+      replacements.push(new Date(cursor));
+    }
+    if (type) {
+      replacements.push(type);
     }
 
-    const animalPost = await getConnection().query(
+    let animalPost = await getConnection().query(
       `
     select a.*
     from animal a
-    ${cursor ? `where a."createdDate" < $2` : ""}
+    ${
+      cursor && !type
+        ? `where a."createdDate" < $2`
+        : !cursor && type
+        ? `where a.type = $2`
+        : cursor && type
+        ? `where a."createdDate" < $2 and a.type=$3`
+        : ""
+    }
     order by a."createdDate" DESC
     limit $1
     `,
       replacements
     );
+
     return {
       animalPost: animalPost.slice(0, realLimit),
       hasMore: animalPost.length === reaLimitPlusOne,
@@ -85,28 +98,17 @@ export class AnimalResolver {
     @Ctx()
     { req }: MyContext
   ): Promise<AnimalResponse> {
+    //the apollo client already handle the image props in case or null
 
-    //the apollo client already handle the image props i case or null
     const errors = validateAnimalPost(props);
 
     if (errors) {
       return { errors };
     }
 
-    const {
-      name,
-      type,
-      neutered,
-      location,
-      gender,
-      phone,
-      size,
-      age,
-      description,
-      vaccionations,
-    } = props;
+    const { name } = props;
     let imagesUploaded = [];
-    
+
     const { createReadStream, filename } = await images;
 
     const uniqueImgName = `${req.session.userId}-${name}-${filename}`;
@@ -120,21 +122,10 @@ export class AnimalResolver {
 
     imagesUploaded.push(uniqueImgName);
 
-    console.log("in database", imagesUploaded);
-
     const animal = await Animal.create({
-      name,
-      type,
-      neutered,
-      location,
-      gender,
-      phone,
-      size,
-      age,
-      description,
-      vaccionations,
       images: imagesUploaded,
       creatorId: req.session.userId,
+      ...props,
     }).save();
 
     return { animal };
@@ -145,35 +136,33 @@ export class AnimalResolver {
   async updateAnimal(
     @Arg("id") id: number,
     @Arg("props", () => AnimalInputs, { nullable: true }) props: AnimalInputs,
+    @Arg("images", () => GraphQLUpload)
+    images: FileUpload,
     @Ctx() { req }: MyContext
   ): Promise<Animal | null> {
-    // TODO: INCLUDE THE IMAGE FIELD
-    const {
-      name,
-      type,
-      neutered,
-      location,
-      gender,
-      phone,
-      size,
-      age,
-      description,
-      vaccionations,
-    } = props;
+    const { name } = props;
+
+    let imagesUpdated = [];
+
+    const { createReadStream, filename } = await images;
+
+    const uniqueImgName = `${req.session.userId}-${name}-${filename}`;
+    await new Promise((res) =>
+      createReadStream().pipe(
+        createWriteStream(
+          __dirname + `/../../../client/public/public-images/${uniqueImgName}`
+        ).on("close", res)
+      )
+    );
+
+    imagesUpdated.push(uniqueImgName);
+
     const result = await getConnection()
       .createQueryBuilder()
       .update(Animal)
       .set({
-        name,
-        type,
-        neutered,
-        location,
-        gender,
-        phone,
-        size,
-        age,
-        description,
-        vaccionations,
+        images: imagesUpdated,
+        ...props,
       })
       .where("id= :id and creatorId= :creatorId", {
         id,

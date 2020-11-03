@@ -25,6 +25,7 @@ export type Query = {
 
 
 export type QueryAnimalPostsArgs = {
+  type?: Maybe<Scalars['String']>;
   cursor?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
 };
@@ -89,6 +90,7 @@ export type MutationAddAnimalArgs = {
 
 
 export type MutationUpdateAnimalArgs = {
+  images: Scalars['Upload'];
   props?: Maybe<AnimalInputs>;
   id: Scalars['Float'];
 };
@@ -207,6 +209,16 @@ export type ChangePasswordMutation = (
   ) }
 );
 
+export type DeleteAnimalPostMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteAnimalPostMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteAnimal'>
+);
+
 export type ForgotPasswordMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
@@ -266,9 +278,47 @@ export type RegisterMutation = (
   ) }
 );
 
+export type UpdateAnimalPostMutationVariables = Exact<{
+  size: Scalars['String'];
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  age?: Maybe<Scalars['String']>;
+  images: Scalars['Upload'];
+  type: Scalars['String'];
+  gender: Scalars['String'];
+  phone: Scalars['String'];
+  location: Scalars['String'];
+  vaccionations: Scalars['Boolean'];
+  neutered: Scalars['Boolean'];
+  id: Scalars['Float'];
+}>;
+
+
+export type UpdateAnimalPostMutation = (
+  { __typename?: 'Mutation' }
+  & { updateAnimal?: Maybe<(
+    { __typename?: 'Animal' }
+    & Pick<Animal, 'id' | 'name' | 'type' | 'description'>
+  )> }
+);
+
+export type AnimalPostQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type AnimalPostQuery = (
+  { __typename?: 'Query' }
+  & { animal?: Maybe<(
+    { __typename?: 'Animal' }
+    & Pick<Animal, 'name' | 'id' | 'description' | 'images' | 'size' | 'type' | 'gender' | 'age' | 'phone' | 'creatorId' | 'location' | 'createdDate' | 'vaccionations' | 'neutered'>
+  )> }
+);
+
 export type AnimalPostsQueryVariables = Exact<{
   limit: Scalars['Int'];
   cursor?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -279,7 +329,7 @@ export type AnimalPostsQuery = (
     & Pick<PaginatedAnimalsPosts, 'hasMore'>
     & { animalPost: Array<(
       { __typename?: 'Animal' }
-      & Pick<Animal, 'id' | 'name' | 'images' | 'type' | 'createdDate' | 'location' | 'gender' | 'size'>
+      & Pick<Animal, 'id' | 'name' | 'images' | 'type' | 'createdDate' | 'location' | 'gender' | 'size' | 'creatorId'>
     )> }
   ) }
 );
@@ -390,6 +440,36 @@ export function useChangePasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type ChangePasswordMutationHookResult = ReturnType<typeof useChangePasswordMutation>;
 export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordMutation>;
 export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<ChangePasswordMutation, ChangePasswordMutationVariables>;
+export const DeleteAnimalPostDocument = gql`
+    mutation deleteAnimalPost($id: Int!) {
+  deleteAnimal(id: $id)
+}
+    `;
+export type DeleteAnimalPostMutationFn = Apollo.MutationFunction<DeleteAnimalPostMutation, DeleteAnimalPostMutationVariables>;
+
+/**
+ * __useDeleteAnimalPostMutation__
+ *
+ * To run a mutation, you first call `useDeleteAnimalPostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAnimalPostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAnimalPostMutation, { data, loading, error }] = useDeleteAnimalPostMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteAnimalPostMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAnimalPostMutation, DeleteAnimalPostMutationVariables>) {
+        return Apollo.useMutation<DeleteAnimalPostMutation, DeleteAnimalPostMutationVariables>(DeleteAnimalPostDocument, baseOptions);
+      }
+export type DeleteAnimalPostMutationHookResult = ReturnType<typeof useDeleteAnimalPostMutation>;
+export type DeleteAnimalPostMutationResult = Apollo.MutationResult<DeleteAnimalPostMutation>;
+export type DeleteAnimalPostMutationOptions = Apollo.BaseMutationOptions<DeleteAnimalPostMutation, DeleteAnimalPostMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation forgotPassword($email: String!) {
   forgotPassword(email: $email)
@@ -534,9 +614,101 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const UpdateAnimalPostDocument = gql`
+    mutation updateAnimalPost($size: String!, $name: String!, $description: String, $age: String, $images: Upload!, $type: String!, $gender: String!, $phone: String!, $location: String!, $vaccionations: Boolean!, $neutered: Boolean!, $id: Float!) {
+  updateAnimal(id: $id, props: {size: $size, name: $name, description: $description, age: $age, type: $type, gender: $gender, phone: $phone, location: $location, vaccionations: $vaccionations, neutered: $neutered}, images: $images) {
+    id
+    name
+    type
+    description
+  }
+}
+    `;
+export type UpdateAnimalPostMutationFn = Apollo.MutationFunction<UpdateAnimalPostMutation, UpdateAnimalPostMutationVariables>;
+
+/**
+ * __useUpdateAnimalPostMutation__
+ *
+ * To run a mutation, you first call `useUpdateAnimalPostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAnimalPostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAnimalPostMutation, { data, loading, error }] = useUpdateAnimalPostMutation({
+ *   variables: {
+ *      size: // value for 'size'
+ *      name: // value for 'name'
+ *      description: // value for 'description'
+ *      age: // value for 'age'
+ *      images: // value for 'images'
+ *      type: // value for 'type'
+ *      gender: // value for 'gender'
+ *      phone: // value for 'phone'
+ *      location: // value for 'location'
+ *      vaccionations: // value for 'vaccionations'
+ *      neutered: // value for 'neutered'
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUpdateAnimalPostMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAnimalPostMutation, UpdateAnimalPostMutationVariables>) {
+        return Apollo.useMutation<UpdateAnimalPostMutation, UpdateAnimalPostMutationVariables>(UpdateAnimalPostDocument, baseOptions);
+      }
+export type UpdateAnimalPostMutationHookResult = ReturnType<typeof useUpdateAnimalPostMutation>;
+export type UpdateAnimalPostMutationResult = Apollo.MutationResult<UpdateAnimalPostMutation>;
+export type UpdateAnimalPostMutationOptions = Apollo.BaseMutationOptions<UpdateAnimalPostMutation, UpdateAnimalPostMutationVariables>;
+export const AnimalPostDocument = gql`
+    query animalPost($id: Int!) {
+  animal(id: $id) {
+    name
+    id
+    description
+    images
+    size
+    type
+    gender
+    age
+    phone
+    creatorId
+    location
+    createdDate
+    vaccionations
+    neutered
+  }
+}
+    `;
+
+/**
+ * __useAnimalPostQuery__
+ *
+ * To run a query within a React component, call `useAnimalPostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAnimalPostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAnimalPostQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useAnimalPostQuery(baseOptions?: Apollo.QueryHookOptions<AnimalPostQuery, AnimalPostQueryVariables>) {
+        return Apollo.useQuery<AnimalPostQuery, AnimalPostQueryVariables>(AnimalPostDocument, baseOptions);
+      }
+export function useAnimalPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AnimalPostQuery, AnimalPostQueryVariables>) {
+          return Apollo.useLazyQuery<AnimalPostQuery, AnimalPostQueryVariables>(AnimalPostDocument, baseOptions);
+        }
+export type AnimalPostQueryHookResult = ReturnType<typeof useAnimalPostQuery>;
+export type AnimalPostLazyQueryHookResult = ReturnType<typeof useAnimalPostLazyQuery>;
+export type AnimalPostQueryResult = Apollo.QueryResult<AnimalPostQuery, AnimalPostQueryVariables>;
 export const AnimalPostsDocument = gql`
-    query AnimalPosts($limit: Int!, $cursor: String) {
-  animalPosts(limit: $limit, cursor: $cursor) {
+    query AnimalPosts($limit: Int!, $cursor: String, $type: String) {
+  animalPosts(limit: $limit, cursor: $cursor, type: $type) {
     animalPost {
       id
       name
@@ -546,6 +718,7 @@ export const AnimalPostsDocument = gql`
       location
       gender
       size
+      creatorId
     }
     hasMore
   }
@@ -566,6 +739,7 @@ export const AnimalPostsDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      cursor: // value for 'cursor'
+ *      type: // value for 'type'
  *   },
  * });
  */

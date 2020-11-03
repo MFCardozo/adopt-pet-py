@@ -1,13 +1,9 @@
-import React, { useState } from "react";
-import Link from "next/link";
+import { useApolloClient } from "@apollo/client";
 import {
   Box,
-  Heading,
-  Flex,
-  Text,
   Button,
+  Flex,
   Image,
-  IconButton,
   Link as StyleLink,
   Menu,
   MenuButton,
@@ -15,18 +11,13 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/core";
+import Link from "next/link";
+import React, { useState } from "react";
 import {
   useCurrentUserLoginQuery,
   useLogoutMutation,
 } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
-import { useApolloClient } from "@apollo/client";
-
-const MenuItems: React.FC = ({ children }) => (
-  <StyleLink mt={[3, 0]} mb={[1, 0]} mr={6} display="block">
-    {children}
-  </StyleLink>
-);
 
 const NavBar: React.FC = (props) => {
   const [logout] = useLogoutMutation();
@@ -94,7 +85,7 @@ const NavBar: React.FC = (props) => {
       <Flex align="center" mr={5} order={1}>
         <Link href="/">
           <StyleLink>
-            <Image size="50px" src="\logo.png" alt="ayudamepy logo" />
+            <Image size="50px" src="\logo.png" />
           </StyleLink>
         </Link>
       </Flex>
@@ -105,22 +96,22 @@ const NavBar: React.FC = (props) => {
         flexGrow={1}
         order={[5, 2]}
       >
-        <Link href="/">
-          <MenuItems>Find a dog</MenuItems>
+        <Link href="/dogs">
+          <StyleLink>Find a dog</StyleLink>
         </Link>
-        <Link href="/">
-          <MenuItems>Find a cat</MenuItems>
+        <Link href="/cats">
+          <StyleLink ml="15px">Find a cat</StyleLink>
         </Link>
 
         <hr />
       </Box>
       <Flex minW={["40%", "20%"]} justify="flex-end" order={2} mr={1}>
-        <IconButton
+        {/* <IconButton
           aria-label="Search database"
           variant="ghost"
           isRound={true}
           icon="search"
-        />
+        /> */}
       </Flex>
       <Box display={["block", "none"]} onClick={handleToggle} order={[4, 6]}>
         <svg
@@ -140,7 +131,7 @@ const NavBar: React.FC = (props) => {
         </svg>
       </Box>
       <Link href="/create-post">
-        <Button size="sm" variantColor="blue" mr={2} order={3}>
+        <Button size="sm" variantColor="blue" order={3} mr={2}>
           Public Post
         </Button>
       </Link>

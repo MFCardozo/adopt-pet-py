@@ -1,7 +1,7 @@
 import { Form, Formik } from "formik";
 import React from "react";
 import { useRouter } from "next/router";
-import { InputField } from "../components/InputField";
+import { InputField } from "../components/formComponents/InputField";
 import { Box, Button, Image, Flex } from "@chakra-ui/core";
 import { Wrapper } from "../components/Wrapper";
 
@@ -12,12 +12,13 @@ import {
 } from "../generated/graphql";
 import { toErrorObj } from "../utils/toErrorObj";
 import { checkPasswordFields } from "../utils/checkPasswordFields";
+import { withApollo } from "../utils/withApollo";
 
 interface registerProps {}
 
 const Register: React.FC<registerProps> = ({}) => {
   const router = useRouter();
-  const [register, { data }] = useRegisterMutation();
+  const [register] = useRegisterMutation();
   return (
     <Wrapper variant="small">
       <Box w="50%" mx="auto">
@@ -104,4 +105,4 @@ const Register: React.FC<registerProps> = ({}) => {
     </Wrapper>
   );
 };
-export default Register;
+export default withApollo({ ssr: false })(Register);

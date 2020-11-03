@@ -4,16 +4,16 @@ import { AnimalCardList } from "../components/AnimalCardList";
 import { Layout } from "../components/Layout";
 import { withApollo } from "../utils/withApollo";
 
-const Index: React.FC = () => {
+const Cats: React.FC = () => {
   return (
     <Layout>
       <Heading mb={5} textAlign="center">
-        Most Recent
+        Cats
       </Heading>
 
-      <AnimalCardList />
+      <AnimalCardList filter="Cat" />
     </Layout>
   );
 };
 
-export default withApollo({ ssr: true })(Index);
+export default withApollo({ ssr: true })(Cats);

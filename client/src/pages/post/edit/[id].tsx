@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Flex,
   FormLabel,
   Stack,
@@ -10,37 +11,67 @@ import {
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React from "react";
-import { ImageField } from "../components/formComponents/ImageField";
-import { InputField } from "../components/formComponents/InputField";
-import { PhoneField } from "../components/formComponents/PhoneField";
-import { Layout } from "../components/Layout";
-import { useAddAnimalPostMutation } from "../generated/graphql";
-import { currentUserIsAuth } from "../utils/currentUserIsAuth";
-import { toErrorObj } from "../utils/toErrorObj";
-import { withApollo } from "../utils/withApollo";
+import { ImageField } from "../../../components/formComponents/ImageField";
+import { InputField } from "../../../components/formComponents/InputField";
+import { PhoneField } from "../../../components/formComponents/PhoneField";
+import { Layout } from "../../../components/Layout";
+import {
+  useAnimalPostQuery,
+  useUpdateAnimalPostMutation,
+} from "../../../generated/graphql";
+import { useGetNumberId } from "../../../utils/useGetNumberId";
+import { withApollo } from "../../../utils/withApollo";
 
-interface CreatePostProps {}
+interface PostEditProps {}
 
-const CreatePost: React.FC<CreatePostProps> = ({}) => {
+const EditPost: React.FC<PostEditProps> = ({}) => {
   const router = useRouter();
-  currentUserIsAuth();
-  const [addAnimalPost] = useAddAnimalPostMutation();
+  const intId = useGetNumberId();
+  const { data, loading } = useAnimalPostQuery({
+    skip: intId === -1,
+    variables: {
+      id: intId,
+    },
+  });
+  const [updateAnimalPost] = useUpdateAnimalPostMutation();
+
+  if (loading) {
+    return (
+      <Layout>
+        <Box w="100%">
+          <CircularProgress
+            my="40vh"
+            w="100%"
+            isIndeterminate
+            color="blue"
+          ></CircularProgress>
+        </Box>
+      </Layout>
+    );
+  }
+  if (!data?.animal) {
+    return (
+      <Layout>
+        <Box>could not find post</Box>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
       <Formik
         initialValues={{
-          name: "",
-          description: "",
-          type: "Cat",
-          age: "",
-          images: null,
-          size: "Newborn",
-          gender: "Female",
-          phone: "",
-          location: "",
-          vaccionations: false,
-          neutered: false,
+          name: data.animal.name,
+          description: data.animal.description,
+          type: data.animal.type,
+          age: data.animal.age,
+          images: data.animal.images[0],
+          size: data.animal.size,
+          gender: data.animal.gender,
+          phone: data.animal.phone,
+          location: data.animal.location,
+          vaccionations: data.animal.vaccionations,
+          neutered: data.animal.neutered,
         }}
         validateOnChange={false}
         validateOnBlur={false}
@@ -49,21 +80,14 @@ const CreatePost: React.FC<CreatePostProps> = ({}) => {
             setErrors({ images: "An image must be selected" });
             return;
           }
-          const response = await addAnimalPost({
-            variables: values,
+          await updateAnimalPost({
+            variables: { id: intId, ...values },
             update: (cache) => {
               cache.evict({ fieldName: "animalPosts:{}" });
             },
           });
-          // animalPosts
 
-          if (response.data?.addAnimal.errors) {
-            setErrors(toErrorObj(response.data.addAnimal.errors));
-          } else if (response.data?.addAnimal.animal) {
-            //successfully animal added
-            router.push("/");
-          }
-          return response;
+          router.back();
         }}
       >
         {({ isSubmitting, setFieldValue }) => (
@@ -171,7 +195,7 @@ const CreatePost: React.FC<CreatePostProps> = ({}) => {
                 isLoading={isSubmitting}
                 type="submit"
               >
-                Create
+                Update
               </Button>
             </Flex>
           </Form>
@@ -181,4 +205,4 @@ const CreatePost: React.FC<CreatePostProps> = ({}) => {
   );
 };
 
-export default withApollo({ ssr: false })(CreatePost);
+export default withApollo({ ssr: false })(EditPost);

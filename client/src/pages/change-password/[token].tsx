@@ -1,9 +1,9 @@
-import { Flex, Button, Box, Link as StyleLink, Text } from "@chakra-ui/core";
-import { Formik, Form } from "formik";
+import { Button, Flex, Link as StyleLink, Text } from "@chakra-ui/core";
+import { Form, Formik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { InputField } from "../../components/InputField";
+import { InputField } from "../../components/formComponents/InputField";
 import { Wrapper } from "../../components/Wrapper";
 import {
   CurrentUserLoginDocument,
@@ -12,6 +12,7 @@ import {
 } from "../../generated/graphql";
 import { checkPasswordFields } from "../../utils/checkPasswordFields";
 import { toErrorObj } from "../../utils/toErrorObj";
+import { withApollo } from "../../utils/withApollo";
 
 interface changePasswordProps {}
 
@@ -105,4 +106,4 @@ const ChangePassword: React.FC<changePasswordProps> = ({}) => {
   );
 };
 
-export default ChangePassword;
+export default withApollo({ ssr: false })(ChangePassword);

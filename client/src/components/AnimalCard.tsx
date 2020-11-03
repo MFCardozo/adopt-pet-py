@@ -1,10 +1,13 @@
 import { Badge, Box, Flex, IconButton, Image } from "@chakra-ui/core";
-import React from "react";
+import React, { useEffect } from "react";
 import { Animal } from "../generated/graphql";
 import { format } from "timeago.js";
+import { useState } from "react";
+import { EditDeletePosts } from "./EditDeletePosts";
+import Link from "next/link";
 interface AnimalCardProps {
   data: Pick<
-    Animal,
+    Animal, //fieldname cache update
     | "id"
     | "name"
     | "images"
@@ -13,18 +16,39 @@ interface AnimalCardProps {
     | "location"
     | "gender"
     | "size"
+    | "creatorId"
   >;
 }
 
 export const AnimalCard: React.FC<AnimalCardProps> = ({ data }) => {
-  const { name, type, images, location, gender, size } = data;
+  const { name, type, images, location, gender, size, creatorId, id } = data;
   let { createdDate } = data;
 
-  const readableDate = format(createdDate);
+  const LocateTimeDate = new Date(createdDate).getTime() - 1000 * 60 * 60 * 3; //-3 hours due timezone
+
+  //update the date every 1 minute a display above
+  const [readableDate, setReadableDate] = useState(format(LocateTimeDate));
+  useEffect(() => {
+    let isCancelled = false;
+    if (!isCancelled) {
+      setTimeout(() => setReadableDate(format(LocateTimeDate)), 60000);
+    }
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   return (
-    <Box maxW="100%" borderWidth="1px" borderRadius="lg" overflow="hidden">
-      <Image minH="300px" src={`/public-images/${images[0]}`} alt={type} />
+    <Box maxW="270px" borderWidth="1px" borderRadius="lg" overflow="hidden">
+      <Link href="post/id" as={`post/${id}`}>
+        <Image
+          cursor="pointer"
+          minH="300px"
+          src={`/public-images/${images[0]}`}
+          alt={`${name}-${type}`}
+          objectFit="cover"
+        />
+      </Link>
 
       <Box p="1">
         <Box d="flex" alignItems="baseline" justifyContent="space-between">
@@ -41,18 +65,7 @@ export const AnimalCard: React.FC<AnimalCardProps> = ({ data }) => {
             </Badge>
           </Box>
           <Box>
-            <IconButton
-              size="sm"
-              variant="outline"
-              aria-label="Edit Post"
-              icon="edit"
-            />
-            <IconButton
-              size="sm"
-              variant="outline"
-              aria-label="Delete Post"
-              icon="delete"
-            />
+            <EditDeletePosts id={id} creatorId={creatorId} />
           </Box>
         </Box>
         <Box

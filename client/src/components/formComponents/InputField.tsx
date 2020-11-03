@@ -36,7 +36,9 @@ export const InputField: React.FC<InputFieldProps> = ({
     <FormControl isInvalid={!!error} isRequired={isRequired}>
       {label ? <FormLabel htmlFor={field.name}>{label}</FormLabel> : null}
       <InputTypes {...field} {...props} id={field.name} />
-      <FormHelperText {...props}>{helperText}</FormHelperText>
+      {helperText ? (
+        <FormHelperText {...props}>{helperText}</FormHelperText>
+      ) : null}
       {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
     </FormControl>
   );

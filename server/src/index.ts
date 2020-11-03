@@ -11,20 +11,20 @@ import { createConnection } from "typeorm";
 import { __prod__ } from "./constants";
 import { AnimalResolver } from "./resolvers/animalPosts";
 import { UserResolver } from "./resolvers/user";
+import "dotenv-safe/config";
 import typeConfig from "./type-orm.config";
 
 const main = async () => {
-  const orm = await createConnection(typeConfig);
+  await createConnection(typeConfig);
 
   const app = express();
-  //rh
 
   const RedisStore = connectRedis(session);
-  const redis = new Redis("127.0.0.1:6379"); //change this
+  const redis = new Redis(process.env.REDIS_URL);
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: process.env.CORS_ORIGIN,
       credentials: true,
     })
   );
@@ -41,10 +41,10 @@ const main = async () => {
         httpOnly: true,
         sameSite: "lax", // csrf
         secure: __prod__, // cookie only works in https
-        //domain: __prod__ ? ".codeponder.com" : undefined,
+        //domain: __prod__ ? ".example.com" : undefined,
       },
       saveUninitialized: false,
-      secret: "asmsakxaslxascascq",
+      secret: process.env.SESSION_SECRET,
       resave: false,
     })
   );
@@ -61,7 +61,7 @@ const main = async () => {
 
   apolloServer.applyMiddleware({ app, cors: false });
 
-  app.listen(4000, () => {
+  app.listen(parseInt(process.env.PORT), () => {
     console.log("server started on port 4000");
   });
 };

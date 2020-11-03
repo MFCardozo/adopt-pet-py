@@ -1,5 +1,5 @@
-query AnimalPosts($limit: Int!, $cursor: String) {
-  animalPosts(limit: $limit, cursor: $cursor) {
+query AnimalPosts($limit: Int!, $cursor: String, $type: String) {
+  animalPosts(limit: $limit, cursor: $cursor, type: $type) {
     animalPost {
       id
       name
@@ -9,6 +9,7 @@ query AnimalPosts($limit: Int!, $cursor: String) {
       location
       gender
       size
+      creatorId
     }
     hasMore
   }

@@ -26,6 +26,9 @@
     "react-is": "^17.0.0",
     "timeago.js": "^4.0.2"
   },
+  "resolutions": {
+    "body-scroll-lock": "3.0.3"
+  },
   "license": "MIT",
   "devDependencies": {
     "@graphql-codegen/cli": "1.18.0",

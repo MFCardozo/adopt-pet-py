@@ -1,0 +1,36 @@
+mutation updateAnimalPost(
+  $size: String!
+  $name: String!
+  $description: String
+  $age: String
+  $images: Upload!
+  $type: String!
+  $gender: String!
+  $phone: String!
+  $location: String!
+  $vaccionations: Boolean!
+  $neutered: Boolean!
+  $id: Float!
+) {
+  updateAnimal(
+    id: $id
+    props: {
+      size: $size
+      name: $name
+      description: $description
+      age: $age
+      type: $type
+      gender: $gender
+      phone: $phone
+      location: $location
+      vaccionations: $vaccionations
+      neutered: $neutered
+    }
+    images: $images
+  ) {
+    id
+    name
+    type
+    description
+  }
+}
