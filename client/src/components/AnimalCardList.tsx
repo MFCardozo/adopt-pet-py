@@ -1,13 +1,11 @@
 import { Box, SimpleGrid, Skeleton, Flex, Button } from "@chakra-ui/core";
 import React from "react";
 import { useAnimalPostsQuery } from "../generated/graphql";
-import useWindowSize from "../utils/useWindowSize";
 import { AnimalCard } from "./AnimalCard";
 
 interface AnimalCardListProps {
   filter?: string | null;
 }
-
 
 export const AnimalCardList: React.FC<AnimalCardListProps> = ({ filter }) => {
   const limit = 8;

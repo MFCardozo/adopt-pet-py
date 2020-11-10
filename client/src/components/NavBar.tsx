@@ -142,12 +142,7 @@ const NavBar: React.FC = (props) => {
         order={[5, 5]}
       >
         <Menu>
-          <MenuButton
-            as={Button}
-            size="sm"
-            rightIcon="chevron-down"
-            variant="outline"
-          >
+          <MenuButton as={Button} size="sm" backgroundColor="blue.500">
             Options
           </MenuButton>
           <MenuList>{dinamicNavUser}</MenuList>

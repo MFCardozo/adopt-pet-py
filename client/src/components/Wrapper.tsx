@@ -1,5 +1,5 @@
+import { Box } from "@chakra-ui/core";
 import React from "react";
-import { Box, Button, Flex, Icon, Link } from "@chakra-ui/core";
 
 export type WrapperVariant = "small" | "regular";
 
@@ -23,18 +23,6 @@ export const Wrapper: React.FC<WrapperProps> = ({
       w="100%"
     >
       {children}
-
-      <Flex justify="end" position="absolute" w="85%" mt="40px" pb="10px">
-        <Button
-          variant="outline"
-          as={Link}
-          href="https://github.com/ManuMcfly6/adopt-pet-py"
-          isExternal
-        >
-          Source Code
-          <Icon name="external-link" mx="2px" />
-        </Button>
-      </Flex>
     </Box>
   );
 };

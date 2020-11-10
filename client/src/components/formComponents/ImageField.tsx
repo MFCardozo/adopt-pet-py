@@ -48,15 +48,12 @@ export const ImageField: React.FC<ImageFieldProps> = ({ setImages, name }) => {
 
   return (
     <>
-      <FormControl isInvalid={!!error && imagePreview.length === 0} isRequired>
-        <Button
-          as={FormLabel}
-          mt={2}
-          mx="auto"
-          variantColor="blue"
-          htmlFor={field.name}
-          name={field.name}
-        >
+      <FormControl
+        isInvalid={!!error && imagePreview.length === 0}
+        isRequired
+        position="relative"
+      >
+        <Button as={FormLabel} mt={2} mx="auto" variantColor="blue">
           Choose Pet Images
         </Button>
         {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
@@ -68,7 +65,9 @@ export const ImageField: React.FC<ImageFieldProps> = ({ setImages, name }) => {
           name={field.name}
           accept="image/*"
           opacity={0}
-          w={0}
+          w={"200px"}
+          p={5}
+          top={0}
           position="absolute"
           z-index={-1}
           // multiple

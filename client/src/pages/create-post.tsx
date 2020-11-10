@@ -35,7 +35,7 @@ const CreatePost: React.FC<CreatePostProps> = ({}) => {
           type: "Cat",
           age: "",
           images: null,
-          size: "Newborn",
+          size: "NewBorn",
           gender: "Female",
           phone: "",
           location: "",
@@ -63,6 +63,7 @@ const CreatePost: React.FC<CreatePostProps> = ({}) => {
             //successfully animal added
             router.push("/");
           }
+
           return response;
         }}
       >
@@ -118,7 +119,7 @@ const CreatePost: React.FC<CreatePostProps> = ({}) => {
                 Size
               </Box>
               <Box role="group" aria-labelledby="my-radio-size" mb={4}>
-                <Field id="newborn" name="size" type="radio" value="Female" />
+                <Field id="newborn" name="size" type="radio" value="NewBorn" />
                 <FormLabel htmlFor="newborn" mx={2}>
                   NewBorn
                 </FormLabel>
@@ -181,4 +182,4 @@ const CreatePost: React.FC<CreatePostProps> = ({}) => {
   );
 };
 
-export default withApollo({ ssr: false })(CreatePost);
+export default withApollo({ ssr: true })(CreatePost);

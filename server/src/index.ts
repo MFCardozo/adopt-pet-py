@@ -17,17 +17,20 @@ import typeConfig from "./type-orm.config";
 const main = async () => {
   await createConnection(typeConfig);
 
+  // await conn.runMigrations();
+
   const app = express();
 
   const RedisStore = connectRedis(session);
   const redis = new Redis(process.env.REDIS_URL);
-
+  app.set("trust proxy", 1);
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN,
       credentials: true,
     })
   );
+  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
   app.use(
     session({
@@ -41,7 +44,7 @@ const main = async () => {
         httpOnly: true,
         sameSite: "lax", // csrf
         secure: __prod__, // cookie only works in https
-        //domain: __prod__ ? ".example.com" : undefined,
+        domain: __prod__ ? ".petfinderpy.com" : undefined,
       },
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET,
@@ -57,7 +60,6 @@ const main = async () => {
     context: ({ req, res }) => ({ req, res, redis }),
     uploads: false,
   });
-  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
   apolloServer.applyMiddleware({ app, cors: false });
 

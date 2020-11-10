@@ -26,7 +26,7 @@ export const EditDeletePosts: React.FC<EditDeletePostsProps> = ({
   //set alert dialog for delete
   const [isOpen, setIsOpen] = useState<boolean>();
   const onClose = () => setIsOpen(false);
-  const cancelRef = React.useRef();
+  const cancelRef = React.useRef<HTMLElement | null>();
 
   //delete post
   const { data } = useCurrentUserLoginQuery();
@@ -57,7 +57,7 @@ export const EditDeletePosts: React.FC<EditDeletePostsProps> = ({
       />
       <AlertDialog
         isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
+        leastDestructiveRef={cancelRef as any}
         onClose={onClose}
       >
         <AlertDialogOverlay />

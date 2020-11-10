@@ -5,7 +5,7 @@ import path from "path";
 export default {
   type: "postgres",
   url: process.env.DATABASE_URL,
-  // synchronize: true,
+  //synchronize: true,
   migrations: [path.join(__dirname, "./migrations/*")],
   entities: [Animal, User],
   logging: false,
