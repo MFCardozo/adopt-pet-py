@@ -8,7 +8,7 @@ dist/
 
 
 #S3 create client
-/src/S3.ts
+/src/S3Uploader.ts
 # testing
 /coverage
 
