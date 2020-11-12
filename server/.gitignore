@@ -6,6 +6,9 @@
 .pnp.js
 dist/
 
+
+#S3 create client
+/src/S3.ts
 # testing
 /coverage
 

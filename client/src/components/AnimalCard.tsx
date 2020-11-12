@@ -24,7 +24,7 @@ export const AnimalCard: React.FC<AnimalCardProps> = ({ data }) => {
   const { name, type, images, location, gender, size, creatorId, id } = data;
   let { createdDate } = data;
 
-  const LocateTimeDate = new Date(createdDate).getTime() - 1000 * 60 * 60 * 3; //-3 hours due timezone
+  const LocateTimeDate = new Date(createdDate).getTime();
 
   //update the date every 1 minute a display above
   const [readableDate, setReadableDate] = useState(format(LocateTimeDate));
@@ -44,7 +44,7 @@ export const AnimalCard: React.FC<AnimalCardProps> = ({ data }) => {
         <Image
           cursor="pointer"
           minH="300px"
-          src={`/public-images/${images[0]}`}
+          src={images[0]}
           alt={`${name}-${type}`}
           objectFit="cover"
         />

@@ -1,9 +1,5 @@
 import { createWithApollo } from "./createWithApollo";
-import {
-  ApolloClient,
-  ApolloClientOptions,
-  InMemoryCache,
-} from "@apollo/client";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { createUploadLink } from "apollo-upload-client";
 import { NextPageContext } from "next";
 import { PaginatedAnimalsPosts } from "../generated/graphql";

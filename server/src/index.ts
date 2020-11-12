@@ -1,3 +1,4 @@
+require("dotenv").config();
 import { ApolloServer } from "apollo-server-express";
 import connectRedis from "connect-redis";
 import cors from "cors";
@@ -11,7 +12,6 @@ import { createConnection } from "typeorm";
 import { __prod__ } from "./constants";
 import { AnimalResolver } from "./resolvers/animalPosts";
 import { UserResolver } from "./resolvers/user";
-import "dotenv-safe/config";
 import typeConfig from "./type-orm.config";
 
 const main = async () => {
@@ -20,6 +20,8 @@ const main = async () => {
   // await conn.runMigrations();
 
   const app = express();
+
+  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
   const RedisStore = connectRedis(session);
   const redis = new Redis(process.env.REDIS_URL);
@@ -30,7 +32,6 @@ const main = async () => {
       credentials: true,
     })
   );
-  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
   app.use(
     session({

@@ -1,7 +1,8 @@
+import path from "path";
+require("dotenv").config({ path: __dirname + "../" });
 import { Animal } from "./entities/AnimalPost";
 import { User } from "./entities/User";
-import "dotenv-safe/config";
-import path from "path";
+
 export default {
   type: "postgres",
   url: process.env.DATABASE_URL,

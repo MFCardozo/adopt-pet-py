@@ -56,7 +56,7 @@ const Post = ({}) => {
           objectFit="cover"
           h="100%"
           w="100%"
-          src={`/public-images/${data.animal.images[0]}`}
+          src={data.animal.images[0]}
         ></Image>
       </Box>
       <Flex

@@ -1,26 +1,24 @@
+import { GraphQLUpload, FileUpload } from "graphql-upload";
 import {
   Arg,
   Ctx,
   Field,
   Int,
-  ObjectType,
   Mutation,
+  ObjectType,
   Query,
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-
 import { getConnection } from "typeorm";
+
 import { Animal } from "../entities/AnimalPost";
-
-import { FieldError } from "./FieldError";
 import { userIsAuth } from "../middleware/UserIsAuth";
+import { s3Uploader } from "../s3Uploader";
 import { MyContext } from "../types/typesContext";
-import { AnimalInputs } from "./AnimalInputs";
 import { validateAnimalPost } from "../utils/validateAnimalPost";
-import { createWriteStream } from "fs";
-
-import { FileUpload, GraphQLUpload } from "graphql-upload";
+import { AnimalInputs } from "./AnimalInputs";
+import { FieldError } from "./FieldError";
 
 @ObjectType()
 class PaginatedAnimalsPosts {
@@ -94,7 +92,7 @@ export class AnimalResolver {
   async addAnimal(
     @Arg("props") props: AnimalInputs,
     @Arg("images", () => GraphQLUpload)
-    images: FileUpload,
+    images: Promise<FileUpload>,
     @Ctx()
     { req }: MyContext
   ): Promise<AnimalResponse> {
@@ -110,17 +108,27 @@ export class AnimalResolver {
     let imagesUploaded = [];
 
     const { createReadStream, filename } = await images;
-
     const uniqueImgName = `${req.session.userId}-${name}-${filename}`;
-    await new Promise((res) =>
-      createReadStream().pipe(
-        createWriteStream(
-          __dirname + `/../../../client/public/public-images/${uniqueImgName}`
-        ).on("close", res)
-      )
-    );
 
-    imagesUploaded.push(uniqueImgName);
+    const filePath = s3Uploader.createDestinationFilePath(uniqueImgName);
+
+    // Create an upload stream that goes to S3
+    const uploadStream = s3Uploader.createUploadStream(filePath);
+    // Pipe the file data into the upload stream
+    //  if (!stream) {
+    //    return null;
+    //  }
+
+    createReadStream().pipe(uploadStream.writeStream);
+
+    // Start the stream
+    const resultLink = await uploadStream.promise;
+
+    const link = resultLink.Location;
+
+    console.log("s3 bucket: ", link);
+
+    imagesUploaded.push(link);
 
     const animal = await Animal.create({
       images: imagesUploaded,
@@ -137,25 +145,29 @@ export class AnimalResolver {
     @Arg("id") id: number,
     @Arg("props", () => AnimalInputs, { nullable: true }) props: AnimalInputs,
     @Arg("images", () => GraphQLUpload)
-    images: FileUpload,
+    images: Promise<FileUpload>,
     @Ctx() { req }: MyContext
   ): Promise<Animal | null> {
     const { name } = props;
 
     let imagesUpdated = [];
-
     const { createReadStream, filename } = await images;
 
     const uniqueImgName = `${req.session.userId}-${name}-${filename}`;
-    await new Promise((res) =>
-      createReadStream().pipe(
-        createWriteStream(
-          __dirname + `/../../../client/public/public-images/${uniqueImgName}`
-        ).on("close", res)
-      )
-    );
+    const filePath = s3Uploader.createDestinationFilePath(uniqueImgName);
 
-    imagesUpdated.push(uniqueImgName);
+    // Create an upload stream that goes to S3
+    const uploadStream = s3Uploader.createUploadStream(filePath);
+    // Pipe the file data into the upload stream
+
+    createReadStream().pipe(uploadStream.writeStream);
+
+    // Start the stream
+    const resultLink = await uploadStream.promise;
+
+    const link = resultLink.Location;
+
+    imagesUpdated.push(link);
 
     const result = await getConnection()
       .createQueryBuilder()
