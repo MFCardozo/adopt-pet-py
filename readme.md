@@ -7,6 +7,7 @@
 - React.js
 - Node.js
 - GraphQl
+- AWS S3
 - Postgresql
 - Apollo-server
 - Apollo-client
