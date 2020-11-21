@@ -94,18 +94,19 @@ const NavBar: React.FC = (props) => {
         width={["full", "auto"]}
         alignItems="center"
         flexGrow={1}
+        py={1}
         order={[5, 2]}
       >
         <Link href="/dogs">
           <StyleLink>Find a dog</StyleLink>
         </Link>
         <Link href="/cats">
-          <StyleLink ml="15px">Find a cat</StyleLink>
+          <StyleLink ml="20px">Find a cat</StyleLink>
         </Link>
 
         <hr />
       </Box>
-      <Flex minW={["40%", "20%"]} justify="flex-end" order={2} mr={1}>
+      <Flex minW={["30%", "20%"]} justify="flex-end" order={2} mr={1}>
         {/* <IconButton
           aria-label="Search database"
           variant="ghost"
