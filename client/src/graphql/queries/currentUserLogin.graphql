@@ -1,7 +1,5 @@
 query CurrentUserLogin {
   currentUserLogin {
-    id
-    username
-    email
+    ...regularUser
   }
 }

@@ -160,6 +160,27 @@ export type UserInputs = {
   password: Scalars['String'];
 };
 
+export type RegularErrorFragment = (
+  { __typename?: 'FieldError' }
+  & Pick<FieldError, 'field' | 'message'>
+);
+
+export type RegularUserFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'username'>
+);
+
+export type RegularUserResponseFragment = (
+  { __typename?: 'UserResponse' }
+  & { errors?: Maybe<Array<(
+    { __typename?: 'FieldError' }
+    & RegularErrorFragment
+  )>>, user?: Maybe<(
+    { __typename?: 'User' }
+    & RegularUserFragment
+  )> }
+);
+
 export type AddAnimalPostMutationVariables = Exact<{
   size: Scalars['String'];
   name: Scalars['String'];
@@ -239,13 +260,7 @@ export type LoginMutation = (
   { __typename?: 'Mutation' }
   & { login: (
     { __typename?: 'UserResponse' }
-    & { user?: Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'email' | 'username' | 'createdDate'>
-    )>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
-    )>> }
+    & RegularUserResponseFragment
   ) }
 );
 
@@ -268,13 +283,7 @@ export type RegisterMutation = (
   { __typename?: 'Mutation' }
   & { register: (
     { __typename?: 'UserResponse' }
-    & { user?: Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'email' | 'username' | 'createdDate'>
-    )>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
-    )>> }
+    & RegularUserResponseFragment
   ) }
 );
 
@@ -341,11 +350,33 @@ export type CurrentUserLoginQuery = (
   { __typename?: 'Query' }
   & { currentUserLogin?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'email'>
+    & RegularUserFragment
   )> }
 );
 
-
+export const RegularErrorFragmentDoc = gql`
+    fragment regularError on FieldError {
+  field
+  message
+}
+    `;
+export const RegularUserFragmentDoc = gql`
+    fragment regularUser on User {
+  id
+  username
+}
+    `;
+export const RegularUserResponseFragmentDoc = gql`
+    fragment regularUserResponse on UserResponse {
+  errors {
+    ...regularError
+  }
+  user {
+    ...regularUser
+  }
+}
+    ${RegularErrorFragmentDoc}
+${RegularUserFragmentDoc}`;
 export const AddAnimalPostDocument = gql`
     mutation AddAnimalPost($size: String!, $name: String!, $images: Upload!, $description: String, $age: String, $type: String!, $gender: String!, $phone: String!, $location: String!, $vaccionations: Boolean!, $neutered: Boolean!) {
   addAnimal(props: {size: $size, name: $name, description: $description, age: $age, type: $type, gender: $gender, phone: $phone, location: $location, vaccionations: $vaccionations, neutered: $neutered}, images: $images) {
@@ -503,19 +534,10 @@ export type ForgotPasswordMutationOptions = Apollo.BaseMutationOptions<ForgotPas
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
-    user {
-      id
-      email
-      username
-      createdDate
-    }
-    errors {
-      field
-      message
-    }
+    ...regularUserResponse
   }
 }
-    `;
+    ${RegularUserResponseFragmentDoc}`;
 export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
 
 /**
@@ -574,19 +596,10 @@ export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, L
 export const RegisterDocument = gql`
     mutation Register($username: String!, $email: String!, $password: String!) {
   register(options: {username: $username, email: $email, password: $password}) {
-    user {
-      id
-      email
-      username
-      createdDate
-    }
-    errors {
-      field
-      message
-    }
+    ...regularUserResponse
   }
 }
-    `;
+    ${RegularUserResponseFragmentDoc}`;
 export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
 
 /**
@@ -755,12 +768,10 @@ export type AnimalPostsQueryResult = Apollo.QueryResult<AnimalPostsQuery, Animal
 export const CurrentUserLoginDocument = gql`
     query CurrentUserLogin {
   currentUserLogin {
-    id
-    username
-    email
+    ...regularUser
   }
 }
-    `;
+    ${RegularUserFragmentDoc}`;
 
 /**
  * __useCurrentUserLoginQuery__
